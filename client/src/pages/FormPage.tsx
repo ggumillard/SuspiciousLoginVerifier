@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { CountryCodes } from "@/components/CountryCodes";
-import { EducationalAlert, EducationalBanner } from "@/components/EducationalAlert";
 import { validateEmail, validatePhone, validateUrl } from "@/lib/utils";
 
 interface FormData {
@@ -73,8 +72,6 @@ export default function FormPage() {
 
   return (
     <>
-      <EducationalBanner />
-      
       <Card className="w-full max-w-md bg-white rounded-lg shadow-md">
         <CardContent className="p-6">
           <div className="flex justify-center mb-6">
@@ -215,16 +212,11 @@ export default function FormPage() {
               )}
             </Button>
           </form>
-          
-          <EducationalAlert type="warning" title="Warning Signs:">
-            Legitimate companies rarely ask for this much personal information via forms after login alerts. This level of detail is a red flag for phishing.
-          </EducationalAlert>
         </CardContent>
       </Card>
 
       <div className="w-full max-w-md text-center mt-4 text-gray-500 text-xs">
         <p>Your information is used only for verification purposes. All data is confidential.</p>
-        <p className="mt-2 text-amber-600 font-medium">EDUCATIONAL DEMO - NO REAL DATA IS COLLECTED OR STORED</p>
       </div>
     </>
   );

