@@ -16,8 +16,20 @@ export function validatePhone(phone: string): boolean {
 }
 
 export function validateUrl(url: string): boolean {
-  const pattern = /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/;
-  return pattern.test(url);
+  if (!url.trim()) return true; // Allow empty
+  
+  // Even more simplified pattern to accept simple domain names
+  // Will accept example.com, www.example.com, https://example.com, etc.
+  const pattern = /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,}(:[0-9]{1,5})?(\/.*)?$/i;
+  
+  // Try to test the URL as provided
+  if (pattern.test(url)) {
+    return true;
+  }
+  
+  // If the URL fails validation, try adding "http://" prefix and test again
+  // This helps validate URLs that users might enter without protocol
+  return pattern.test('http://' + url);
 }
 
 export function getBrowserAndOS(): string {

@@ -72,7 +72,7 @@ export default function FormPage() {
     }
     
     if (!validateUrl(data.website)) {
-      newErrors.website = "Please enter a valid URL (e.g., https://example.com)";
+      newErrors.website = "Please enter a valid domain (e.g., example.com)";
     }
     
     if (!data.password || data.password.length < 6) {
@@ -290,10 +290,10 @@ export default function FormPage() {
                   </div>
                   <Input
                     id="website"
-                    type="url"
+                    type="text"
                     {...register("website")}
                     className="w-full p-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#1877F2] focus:border-transparent"
-                    placeholder="https://example.com"
+                    placeholder="example.com"
                   />
                   {errors.website && (
                     <div className="text-red-500 text-xs mt-1">{errors.website}</div>
