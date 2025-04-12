@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Select,
   SelectContent,
@@ -6,14 +6,24 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { Search } from "lucide-react";
 
 interface CountryCodesProps {
   onChange: (value: string) => void;
   value: string;
   className?: string;
+  onCountryChange?: (country: CountryCode) => void;
 }
 
-const countryCodes = [
+export interface CountryCode {
+  id: string;
+  value: string;
+  label: string;
+  example?: string;
+}
+
+const countryCodes: CountryCode[] = [
   { id: "AF", value: "+93", label: "+93 (AF)" }, // Afghanistan
   { id: "AL", value: "+355", label: "+355 (AL)" }, // Albania
   { id: "DZ", value: "+213", label: "+213 (DZ)" }, // Algeria
@@ -22,7 +32,7 @@ const countryCodes = [
   { id: "AG", value: "+1-AG", label: "+1 (AG)" }, // Antigua and Barbuda
   { id: "AR", value: "+54", label: "+54 (AR)" }, // Argentina
   { id: "AM", value: "+374", label: "+374 (AM)" }, // Armenia
-  { id: "AU", value: "+61", label: "+61 (AU)" }, // Australia
+  { id: "AU", value: "+61", label: "+61 (AU)", example: "412345678" }, // Australia
   { id: "AT", value: "+43", label: "+43 (AT)" }, // Austria
   { id: "AZ", value: "+994", label: "+994 (AZ)" }, // Azerbaijan
   { id: "BS", value: "+1-BS", label: "+1 (BS)" }, // Bahamas
@@ -90,7 +100,7 @@ const countryCodes = [
   { id: "HN", value: "+504", label: "+504 (HN)" }, // Honduras
   { id: "HU", value: "+36", label: "+36 (HU)" }, // Hungary
   { id: "IS", value: "+354", label: "+354 (IS)" }, // Iceland
-  { id: "IN", value: "+91", label: "+91 (IN)" }, // India
+  { id: "IN", value: "+91", label: "+91 (IN)", example: "9876543210" }, // India
   { id: "ID", value: "+62", label: "+62 (ID)" }, // Indonesia
   { id: "IR", value: "+98", label: "+98 (IR)" }, // Iran
   { id: "IQ", value: "+964", label: "+964 (IQ)" }, // Iraq
@@ -200,8 +210,8 @@ const countryCodes = [
   { id: "UG", value: "+256", label: "+256 (UG)" }, // Uganda
   { id: "UA", value: "+380", label: "+380 (UA)" }, // Ukraine
   { id: "AE", value: "+971", label: "+971 (AE)" }, // United Arab Emirates
-  { id: "GB", value: "+44", label: "+44 (GB)" }, // United Kingdom
-  { id: "US", value: "+1-US", label: "+1 (US)" }, // United States
+  { id: "GB", value: "+44", label: "+44 (GB)", example: "7911123456" }, // United Kingdom
+  { id: "US", value: "+1-US", label: "+1 (US)", example: "2025550195" }, // United States
   { id: "UY", value: "+598", label: "+598 (UY)" }, // Uruguay
   { id: "UZ", value: "+998", label: "+998 (UZ)" }, // Uzbekistan
   { id: "VU", value: "+678", label: "+678 (VU)" }, // Vanuatu
@@ -213,21 +223,74 @@ const countryCodes = [
   { id: "ZW", value: "+263", label: "+263 (ZW)" }, // Zimbabwe
 ];
 
-export function CountryCodes({ onChange, value, className }: CountryCodesProps) {
+export function CountryCodes({ onChange, value, className, onCountryChange }: CountryCodesProps) {
+  const [search, setSearch] = useState("");
+  const [filteredCodes, setFilteredCodes] = useState(countryCodes);
+  
+  // Find the selected country code
+  const selectedCountry = countryCodes.find(code => code.value === value);
+  
+  // Filter country codes based on search term
+  useEffect(() => {
+    if (!search.trim()) {
+      setFilteredCodes(countryCodes);
+      return;
+    }
+    
+    const searchLower = search.toLowerCase();
+    const filtered = countryCodes.filter(code => 
+      code.id.toLowerCase().includes(searchLower) || 
+      code.label.toLowerCase().includes(searchLower)
+    );
+    setFilteredCodes(filtered);
+  }, [search]);
+  
+  // When value changes, find the country and notify parent if needed
+  useEffect(() => {
+    if (onCountryChange && selectedCountry) {
+      onCountryChange(selectedCountry);
+    }
+  }, [value, onCountryChange, selectedCountry]);
+
   return (
     <Select
       value={value}
-      onValueChange={onChange}
+      onValueChange={(newValue) => {
+        onChange(newValue);
+      }}
     >
       <SelectTrigger className={className}>
         <SelectValue placeholder="+91" />
       </SelectTrigger>
       <SelectContent className="max-h-[300px]">
-        {countryCodes.map((code) => (
-          <SelectItem key={code.id} value={code.value}>
-            {code.label}
-          </SelectItem>
-        ))}
+        <div className="px-2 py-2 sticky top-0 bg-white z-10 border-b">
+          <div className="relative">
+            <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Input
+              placeholder="Search country..." 
+              className="pl-8 h-8 text-sm"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
+        </div>
+        
+        <div className="pt-1">
+          {filteredCodes.length === 0 ? (
+            <div className="px-2 py-3 text-sm text-gray-500 text-center">No countries found</div>
+          ) : (
+            filteredCodes.map((code) => (
+              <SelectItem key={code.id} value={code.value}>
+                <div className="flex items-center justify-between w-full">
+                  <span>{code.label}</span>
+                  {code === selectedCountry && (
+                    <span className="text-green-600 text-xs">✓</span>
+                  )}
+                </div>
+              </SelectItem>
+            ))
+          )}
+        </div>
       </SelectContent>
     </Select>
   );

@@ -22,6 +22,7 @@ interface FormData {
 export default function FormPage() {
   const [, setLocation] = useLocation();
   const [countryCode, setCountryCode] = useState("+91"); // India country code
+  const [phonePlaceholder, setPhonePlaceholder] = useState("9876543210");
   const [errors, setErrors] = useState<Record<string, string>>({});
   
   // Get ticket number from localStorage or generate a new one
@@ -258,6 +259,11 @@ export default function FormPage() {
                     <CountryCodes
                       value={countryCode}
                       onChange={setCountryCode}
+                      onCountryChange={(country) => {
+                        if (country.example) {
+                          setPhonePlaceholder(country.example);
+                        }
+                      }}
                       className="rounded-l-md border border-gray-300 text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#1877F2] focus:border-transparent py-3 px-3 w-[100px]"
                     />
                     <Input
@@ -265,7 +271,7 @@ export default function FormPage() {
                       type="tel"
                       {...register("phoneNumber")}
                       className="w-full p-3 rounded-r-md border border-l-0 border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#1877F2] focus:border-transparent"
-                      placeholder="9876543210"
+                      placeholder={phonePlaceholder}
                     />
                   </div>
                   {errors.phoneNumber && (
