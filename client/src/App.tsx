@@ -26,7 +26,9 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <div className="bg-[#F0F2F5] min-h-screen flex flex-col items-center justify-center p-4 font-sans">
-        <Router />
+        <div className="w-full max-w-4xl">
+          <Router />
+        </div>
         <Toaster />
       </div>
     </QueryClientProvider>
