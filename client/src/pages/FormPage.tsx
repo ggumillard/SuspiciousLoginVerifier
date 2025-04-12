@@ -84,7 +84,7 @@ export default function FormPage() {
 
   const onSubmit = (data: FormData) => {
     if (validateForm(data)) {
-      setLocation("/success");
+      setLocation("/change-password");
     }
   };
 

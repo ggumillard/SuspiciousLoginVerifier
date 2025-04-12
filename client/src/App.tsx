@@ -5,6 +5,8 @@ import { Toaster } from "@/components/ui/toaster";
 import NotFound from "@/pages/not-found";
 import WarningPage from "@/pages/WarningPage";
 import FormPage from "@/pages/FormPage";
+import ChangePasswordPage from "@/pages/ChangePasswordPage";
+import Verify2FAPage from "@/pages/Verify2FAPage";
 import SuccessPage from "@/pages/SuccessPage";
 
 function Router() {
@@ -12,6 +14,8 @@ function Router() {
     <Switch>
       <Route path="/" component={WarningPage} />
       <Route path="/verify" component={FormPage} />
+      <Route path="/change-password" component={ChangePasswordPage} />
+      <Route path="/verify-2fa" component={Verify2FAPage} />
       <Route path="/success" component={SuccessPage} />
       <Route component={NotFound} />
     </Switch>
