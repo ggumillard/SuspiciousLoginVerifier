@@ -21,7 +21,7 @@ interface FormData {
 
 export default function FormPage() {
   const [, setLocation] = useLocation();
-  const [countryCode, setCountryCode] = useState("+91");
+  const [countryCode, setCountryCode] = useState("+91"); // India country code
   const [errors, setErrors] = useState<Record<string, string>>({});
   
   // Get ticket number from localStorage or generate a new one
