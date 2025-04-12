@@ -54,12 +54,12 @@ const countryCodes: CountryCode[] = [
   { id: "BI", value: "+257", label: "+257 (BI)" }, // Burundi
   { id: "KH", value: "+855", label: "+855 (KH)" }, // Cambodia
   { id: "CM", value: "+237", label: "+237 (CM)" }, // Cameroon
-  { id: "CA", value: "+1-CA", label: "+1 (CA)" }, // Canada
+  { id: "CA", value: "+1-CA", label: "+1 (CA)", example: "4165550199" }, // Canada
   { id: "CV", value: "+238", label: "+238 (CV)" }, // Cape Verde
   { id: "CF", value: "+236", label: "+236 (CF)" }, // Central African Republic
   { id: "TD", value: "+235", label: "+235 (TD)" }, // Chad
   { id: "CL", value: "+56", label: "+56 (CL)" }, // Chile
-  { id: "CN", value: "+86", label: "+86 (CN)" }, // China
+  { id: "CN", value: "+86", label: "+86 (CN)", example: "13123456789" }, // China
   { id: "CO", value: "+57", label: "+57 (CO)" }, // Colombia
   { id: "KM", value: "+269", label: "+269 (KM)" }, // Comoros
   { id: "CG", value: "+242", label: "+242 (CG)" }, // Congo
@@ -84,11 +84,11 @@ const countryCodes: CountryCode[] = [
   { id: "ET", value: "+251", label: "+251 (ET)" }, // Ethiopia
   { id: "FJ", value: "+679", label: "+679 (FJ)" }, // Fiji
   { id: "FI", value: "+358", label: "+358 (FI)" }, // Finland
-  { id: "FR", value: "+33", label: "+33 (FR)" }, // France
+  { id: "FR", value: "+33", label: "+33 (FR)", example: "612345678" }, // France
   { id: "GA", value: "+241", label: "+241 (GA)" }, // Gabon
   { id: "GM", value: "+220", label: "+220 (GM)" }, // Gambia
   { id: "GE", value: "+995", label: "+995 (GE)" }, // Georgia
-  { id: "DE", value: "+49", label: "+49 (DE)" }, // Germany
+  { id: "DE", value: "+49", label: "+49 (DE)", example: "15123456789" }, // Germany
   { id: "GH", value: "+233", label: "+233 (GH)" }, // Ghana
   { id: "GR", value: "+30", label: "+30 (GR)" }, // Greece
   { id: "GD", value: "+1-GD", label: "+1 (GD)" }, // Grenada
@@ -109,7 +109,7 @@ const countryCodes: CountryCode[] = [
   { id: "IT", value: "+39", label: "+39 (IT)" }, // Italy
   { id: "CI", value: "+225", label: "+225 (CI)" }, // Ivory Coast
   { id: "JM", value: "+1-JM", label: "+1 (JM)" }, // Jamaica
-  { id: "JP", value: "+81", label: "+81 (JP)" }, // Japan
+  { id: "JP", value: "+81", label: "+81 (JP)", example: "9012345678" }, // Japan
   { id: "JO", value: "+962", label: "+962 (JO)" }, // Jordan
   { id: "KZ", value: "+7-KZ", label: "+7 (KZ)" }, // Kazakhstan
   { id: "KE", value: "+254", label: "+254 (KE)" }, // Kenya
@@ -167,9 +167,9 @@ const countryCodes: CountryCode[] = [
   { id: "PL", value: "+48", label: "+48 (PL)" }, // Poland
   { id: "PT", value: "+351", label: "+351 (PT)" }, // Portugal
   { id: "QA", value: "+974", label: "+974 (QA)" }, // Qatar
-  { id: "KR", value: "+82", label: "+82 (KR)" }, // South Korea
+  { id: "KR", value: "+82", label: "+82 (KR)", example: "1012345678" }, // South Korea
   { id: "RO", value: "+40", label: "+40 (RO)" }, // Romania
-  { id: "RU", value: "+7-RU", label: "+7 (RU)" }, // Russia
+  { id: "RU", value: "+7-RU", label: "+7 (RU)", example: "9123456789" }, // Russia
   { id: "RW", value: "+250", label: "+250 (RW)" }, // Rwanda
   { id: "KN", value: "+1-KN", label: "+1 (KN)" }, // Saint Kitts and Nevis
   { id: "LC", value: "+1-LC", label: "+1 (LC)" }, // Saint Lucia
