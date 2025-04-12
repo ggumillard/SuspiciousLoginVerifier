@@ -20,41 +20,20 @@ export function useIpLocation(): LocationData {
   });
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        // Try to use ipinfo.io to get location data
-        const response = await fetch('https://ipinfo.io/json');
-        
-        if (!response.ok) {
-          throw new Error('Failed to fetch location data');
-        }
-        
-        const result = await response.json();
-        
-        setData({
-          ip: result.ip || '103.21.58.65',
-          location: `${result.city || 'Bengaluru'}, ${result.country || 'India'}`,
-          city: result.city || 'Bengaluru',
-          country: result.country || 'India',
-          loading: false,
-          error: null
-        });
-      } catch (error) {
-        console.error('Error fetching IP data:', error);
-        
-        // Use hardcoded data if the API call fails
-        setData({
-          ip: '103.21.58.65',
-          location: 'Bengaluru, India',
-          city: 'Bengaluru',
-          country: 'India',
-          loading: false,
-          error: error instanceof Error ? error.message : 'Unknown error'
-        });
-      }
-    };
+    // Simulate a short loading delay for better UX
+    const delay = setTimeout(() => {
+      // Always return the fixed values as per requirements
+      setData({
+        ip: '103.21.58.65',
+        location: 'Bengaluru, India',
+        city: 'Bengaluru',
+        country: 'India',
+        loading: false,
+        error: null
+      });
+    }, 800);
 
-    fetchData();
+    return () => clearTimeout(delay);
   }, []);
 
   return data;
