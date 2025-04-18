@@ -30,6 +30,12 @@ app.post("/api/login", (req, res) => {
 
 // Use Railway-compatible port
 const PORT = process.env.PORT || 8888;
+
+app.get("/", (req, res) => {
+  res.send("✅ Server is running!");
+});
+
 app.listen(PORT, () => {
   console.log(`🚀 Server is running on port ${PORT}`);
 });
+
